@@ -59,6 +59,10 @@ public class LottoNumber implements Comparable<LottoNumber> {
         return String.valueOf(number);
     }
 
+    public int getNumber() {
+        return number;
+    }
+
     private void validateRange(int number) {
         if (number < LOTTO_NUMBER_MIN || number > LOTTO_NUMBER_MAX) {
             throw new IllegalArgumentException("로또 번호는 1부터 45까지 가능합니다.");

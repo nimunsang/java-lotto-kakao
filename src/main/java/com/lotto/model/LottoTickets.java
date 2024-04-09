@@ -1,23 +1,21 @@
 package com.lotto.model;
 
-import com.lotto.util.LottoGenerateStrategy;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class LottoTickets {
 
-    private final List<LottoNumbers> lottoTickets = new ArrayList<>();
+    private final List<LottoTicket> lottoTickets = new ArrayList<>();
 
-    public LottoTickets(int lottoTicketSize, LottoGenerateStrategy lottoGenerateStrategy) {
-        for (int i = 0; i < lottoTicketSize; i++) {
-            List<LottoNumber> lottoNumbers = lottoGenerateStrategy.generate();
-            lottoTickets.add(new LottoNumbers(lottoNumbers));
-        }
+    public LottoTickets() {
     }
 
-    public List<LottoNumbers> getLottoTickets() {
+    public LottoTickets(List<LottoTicket> lottoTickets) {
+        this.lottoTickets.addAll(lottoTickets);
+    }
+
+    public List<LottoTicket> getLottoTickets() {
         return lottoTickets;
     }
 
@@ -27,7 +25,26 @@ public class LottoTickets {
 
     public List<LottoRank> matchAll(TargetLotto targetLotto) {
         return lottoTickets.stream()
+                .map(LottoTicket::getLottoNumbers)
                 .map(targetLotto::match)
                 .collect(Collectors.toList());
+    }
+
+    public void add(LottoTicket lottoTicket) {
+        lottoTickets.add(lottoTicket);
+    }
+
+    public void addAll(LottoTickets other) {
+        lottoTickets.addAll(other.getLottoTickets());
+    }
+
+    public int getTicketTypeCount(LottoType lottoType) {
+        return (int) lottoTickets.stream()
+                .filter(lottoTicket -> lottoTicket.isType(lottoType))
+                .count();
+    }
+
+    public int getPrice() {
+        return lottoTickets.size() * LottoTicket.PRICE;
     }
 }
