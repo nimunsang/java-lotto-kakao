@@ -4,8 +4,6 @@ import com.lotto.util.StringUtils;
 
 import java.util.List;
 import java.util.Scanner;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class LottoGameInputView {
     private final Scanner scanner = new Scanner(System.in);
@@ -30,10 +28,8 @@ public class LottoGameInputView {
         return Integer.parseInt(scanner.nextLine());
     }
 
-    public List<List<Integer>> inputManualLottoTicketNumbers(int manualLottoTicketSize) {
+    public List<Integer> inputNumbers() {
         System.out.println("수동으로 구매할 번호를 입력해 주세요.");
-        return IntStream.rangeClosed(1, manualLottoTicketSize)
-                .mapToObj(i -> StringUtils.parseCommaSeparatedToIntegerList(scanner.nextLine()))
-                .collect(Collectors.toList());
+        return StringUtils.parseCommaSeparatedToIntegerList(scanner.nextLine());
     }
 }

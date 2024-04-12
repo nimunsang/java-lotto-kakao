@@ -10,18 +10,13 @@ import java.util.List;
 
 public class LottoGameOutputView {
 
-
-    public void printLottoTicketSize(int lottoCount) {
-        System.out.println(lottoCount + "개를 구매했습니다.");
-    }
-
-    public void printLottoTicketSize(int manualLottoCount, int autoLottoCount) {
+    public void printLottoTicketSize(int manualLottoTicketSize, int autoLottoTicketSize) {
         StringBuilder sb = new StringBuilder();
         sb.append("수동으로 ")
-                .append(manualLottoCount)
+                .append(manualLottoTicketSize)
                 .append("장, ")
                 .append("자동으로 ")
-                .append(autoLottoCount)
+                .append(autoLottoTicketSize)
                 .append("개를 구매했습니다.");
         System.out.println(sb);
     }
