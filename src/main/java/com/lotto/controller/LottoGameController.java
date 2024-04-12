@@ -1,7 +1,6 @@
 package com.lotto.controller;
 
 import com.lotto.model.*;
-import com.lotto.service.AutoLottoService;
 import com.lotto.util.LottoNumbersGenerator;
 import com.lotto.view.LottoGameInputView;
 import com.lotto.view.LottoGameOutputView;
@@ -13,16 +12,14 @@ public class LottoGameController {
     private final LottoGameOutputView lottoGameOutputView;
 
     private final LottoPlayer lottoPlayer;
-    private final ManualLottoController manualLottoController;
-    private final AutoLottoService autoLottoService;
+    private final AutoLottoMachine autoLottoMachine;
 
 
     public LottoGameController(LottoGameInputView lottoGameInputView, LottoGameOutputView lottoGameOutputView) {
         this.lottoGameInputView = lottoGameInputView;
         this.lottoGameOutputView = lottoGameOutputView;
         this.lottoPlayer = new LottoPlayer();
-        this.manualLottoController = new ManualLottoController(lottoPlayer, lottoGameInputView);
-        this.autoLottoService = new AutoLottoService(lottoPlayer, new LottoNumbersGenerator());
+        this.autoLottoMachine = new AutoLottoMachine(new LottoNumbersGenerator());
     }
 
     // 목표 : 수동 / 자동을 손쉽게 떼어낼 수 있다.
@@ -30,16 +27,35 @@ public class LottoGameController {
         Money money = inputMoney();
         lottoPlayer.inputMoney(money);
 
-        manualLottoController.run();
-        autoLottoService.run();
-
-        printLottoTickets();
+        int manualLottoTicketSize = playManualLottoGame();
+        int autoLottoTicketSize = playAutoLottoGame();
+        printLottoTickets(manualLottoTicketSize, autoLottoTicketSize);
 
         TargetLotto targetLotto = inputTargetLotto();
         LottoGame lottoGame = new LottoGame(lottoPlayer, targetLotto);
         LottoResults lottoResults = lottoGame.play();
 
         printStatistics(lottoResults);
+    }
+
+    private int playAutoLottoGame() {
+        Money balance = lottoPlayer.getBalance();
+        int autoLottoTicketSize = balance.divide(Money.valueOf(LottoTicket.PRICE)).intValue();
+        for (int i = 0; i < autoLottoTicketSize; i++) {
+            LottoNumbers lottoNumbers = autoLottoMachine.generateLottoNumbers();
+            lottoPlayer.buyLottoTicket(lottoNumbers);
+        }
+        return autoLottoTicketSize;
+    }
+
+    private int playManualLottoGame() {
+        int manualLottoTicketSize = lottoGameInputView.inputManualLottoTicketSize();
+        for (int i = 0; i < manualLottoTicketSize; i++) {
+            List<Integer> manualLottoTicketNumbers = lottoGameInputView.inputNumbers();
+            LottoNumbers lottoNumbers = LottoNumbers.valueOf(manualLottoTicketNumbers);
+            lottoPlayer.buyLottoTicket(lottoNumbers);
+        }
+        return manualLottoTicketSize;
     }
 
     public void printStatistics(LottoResults lottoResults) {
@@ -58,8 +74,8 @@ public class LottoGameController {
         return Money.valueOf(moneyInteger);
     }
 
-    private void printLottoTickets() {
-        lottoGameOutputView.printLottoTicketSize(lottoPlayer.getTicketTypeCount(LottoType.MANUAL), lottoPlayer.getTicketTypeCount(LottoType.AUTO));
+    private void printLottoTickets(int manualLottoTicketSize, int autoLottoTicketSize) {
+        lottoGameOutputView.printLottoTicketSize(manualLottoTicketSize, autoLottoTicketSize);
         lottoGameOutputView.printLottoTicketList(lottoPlayer);
     }
 }
