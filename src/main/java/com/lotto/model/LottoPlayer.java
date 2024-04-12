@@ -24,20 +24,17 @@ public class LottoPlayer {
         this.balance = balance.add(money);
     }
 
-    public void buyLottoTickets(LottoTickets lottoTickets) {
-        Money lottoTicketsPrice = Money.valueOf(lottoTickets.getPrice());
-        validateBalance(lottoTicketsPrice);
+    public void buyLottoTicket(LottoNumbers lottoNumbers) {
+        LottoTicket lottoTicket = new LottoTicket(lottoNumbers);
+        Money lottoTicketPrice = Money.valueOf(LottoTicket.PRICE);
+        validateBalance(lottoTicketPrice);
 
-        this.lottoTickets.addAll(lottoTickets);
-        balance = balance.subtract(lottoTicketsPrice);
+        this.lottoTickets.add(lottoTicket);
+        balance = balance.subtract(lottoTicketPrice);
     }
 
     public LottoTickets getLottoTickets() {
         return lottoTickets;
-    }
-
-    public int getTicketTypeCount(LottoType lottoType) {
-        return lottoTickets.getTicketTypeCount(lottoType);
     }
 
     private void validateBalance(Money lottoTicketsPrice) {
