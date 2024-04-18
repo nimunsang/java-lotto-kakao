@@ -2,6 +2,7 @@ package com.lotto.view;
 
 import com.lotto.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -28,8 +29,13 @@ public class LottoGameInputView {
         return Integer.parseInt(scanner.nextLine());
     }
 
-    public List<Integer> inputNumbers() {
+    public List<List<Integer>> inputManualLottoTicketNumbers(int manualLottoTicketSize) {
         System.out.println("수동으로 구매할 번호를 입력해 주세요.");
-        return StringUtils.parseCommaSeparatedToIntegerList(scanner.nextLine());
+        List<List<Integer>> manualLottoTicketNumbers = new ArrayList<>();
+        for (int i = 0; i < manualLottoTicketSize; i++) {
+            List<Integer> manualLottoNumbers = StringUtils.parseCommaSeparatedToIntegerList(scanner.nextLine());
+            manualLottoTicketNumbers.add(manualLottoNumbers);
+        }
+        return manualLottoTicketNumbers;
     }
 }
